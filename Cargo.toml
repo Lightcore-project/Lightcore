@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["tiannian <dtiannian@aliyun.com>"]
 
 [dependencies]
+crust = "0.32.1"
