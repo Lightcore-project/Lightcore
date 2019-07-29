@@ -1,0 +1,6 @@
+[package]
+name = "lightcore"
+version = "0.1.0"
+authors = ["tiannian <dtiannian@aliyun.com>"]
+
+[dependencies]
