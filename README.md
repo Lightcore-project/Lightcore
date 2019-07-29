@@ -10,7 +10,7 @@ These interface must be implement for control.
 
 ``` json
 {
-    "driect_node": [
+    "direct_node": [
         "192.168.1.1:3000"
     ],
     "connect_port": 3870,
