@@ -53,6 +53,7 @@ These interface must be implement for control.
   - object_id
   - from
   - to
+  - nonce
   - operator
   - documents
     - doctype
@@ -65,3 +66,15 @@ graph TD;
 	Created -- Revert --> Reverted;
 ```
 
+
+
+#### 用户发送交易流程
+
+1. 准备参数（object_id, from, to, operator, documents）
+2. 组成RawTranscation
+3. 对RawTranscation签名
+4. 发送JSONRPC (sendRawTranscation (data) )
+5. 解析
+6. 验证签名
+7. 放入Tx池
+8. 广播交易
