@@ -1,4 +1,4 @@
-pub struct Block {
+pub struct BlockHeader {
     block_id: [u8;32],
     timestamp: u32,
     height: u32,
@@ -6,7 +6,7 @@ pub struct Block {
     merkle_root: [u8;32],
 }
 
-impl Block {
+impl BlockHeader {
 
 }
 
