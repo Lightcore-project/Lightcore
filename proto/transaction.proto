@@ -1,6 +1,6 @@
 import "./document.proto";
 
-message Transcation {
+message Transaction {
     bytes object_id = 1;
     int64 nonce = 2;
     bytes from = 3;
