@@ -6,7 +6,9 @@
 
 These interface must be implement for control.
 
-### Get / Post Configuration
+### Network Control
+
+#### Get / Post Configuration
 
 ``` json
 {
@@ -23,7 +25,7 @@ These interface must be implement for control.
 }
 ```
 
-### Get Node Information
+#### Get Node Information
 
 ``` json
 {
@@ -31,4 +33,35 @@ These interface must be implement for control.
 }
 ```
 
+### Block related
+
+每一个共识周期在各个节点中产生的数据结构。
+
+#### 区块结构
+
+- 区块头
+  - block_id
+  - timestamp
+  - height
+  - miner
+  - merkle_root
+- 区块体
+  - merkle_tree
+  - transcation
+- 交易
+  - tx_id
+  - object_id
+  - from
+  - to
+  - operator
+  - documents
+    - doctype
+    - content
+
+``` mermaid
+graph TD;
+	New -- DataSubmit --> Created;
+	Created -- PayFor --> PaymentComplete;
+	Created -- Revert --> Reverted;
+```
 
