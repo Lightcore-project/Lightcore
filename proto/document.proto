@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message Document {
+    bytes doc_id = 1;
+
+    enum DocType {
+        PlainText = 1;
+        RDFTurle = 2;
+        RDFXML = 3;
+        RDFJsonLD = 4;
+    }
+
+    DocType type = 2;
+    String content = 3;
+}
