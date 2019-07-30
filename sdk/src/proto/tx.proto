@@ -1,0 +1,17 @@
+import "./doc.proto";
+
+syntax = "proto3";
+
+message Transaction {
+  bytes object_id = 1;
+  int64 nonce = 2;
+  bytes from = 3;
+  bytes to = 4;
+  string operator = 5;
+  repeated Document documents = 6;
+}
+
+message SignedTranscation {
+  bytes signature = 1;
+  Transcation tx = 2;
+}
