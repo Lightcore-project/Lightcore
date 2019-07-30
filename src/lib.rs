@@ -1,5 +1,3 @@
-mod document;
-mod transcation;
-mod block;
-
+mod struction;
+mod error;
 
