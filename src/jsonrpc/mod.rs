@@ -22,7 +22,7 @@ impl JsonRPCServer {
                _execute: TaskExecutor
                ) -> Self {
         let mut io = IoHandler::new();
-        io.add_method("tx", | p: Params | {
+        io.add_method("sendRawTranscation", | p: Params | {
             let d: Map<String, Value> = p.parse().unwrap();
             let code = d.get("code").unwrap().as_str().unwrap();
             let code_bytes = base64::decode(code).unwrap();
@@ -63,7 +63,7 @@ mod tests {
         let server = JsonRPCServer::new(&config, rt.executor());
         rt.shutdown_on_idle()
             .wait().unwrap();
-        server.wait();
+    //    server.wait();
     }
 }
 
