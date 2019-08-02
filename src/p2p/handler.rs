@@ -7,15 +7,24 @@ use libp2p::swarm::{
     SubstreamProtocol
 };
 use void::Void;
-use std::collections::VecDeque;
 use super::error::NetworkError;
 use super::protocol::Hello;
 
 #[allow(dead_code)]
 #[derive(Default)]
 pub struct Handler<TSubStream> {
-    pending_results: VecDeque<std::result::Result<&'static [u8], NetworkError>>,
+    pending_results: std::collections::VecDeque<std::result::Result<&'static [u8], NetworkError>>,
     marker: std::marker::PhantomData<TSubStream>
+}
+
+impl<TSubStream> Handler<TSubStream>
+where TSubStream: AsyncRead + AsyncWrite {
+    pub fn new() -> Self {
+        Handler {
+            pending_results: std::collections::VecDeque::new(),
+            marker: std::marker::PhantomData
+        }
+    }
 }
 
 impl<TSubStream> ProtocolsHandler for Handler<TSubStream>
@@ -56,14 +65,7 @@ where TSubStream: AsyncRead + AsyncWrite {
         )
     }
     
-    fn poll(&mut self) ->
-        std::result::Result<futures::Async<ProtocolsHandlerEvent<Hello, &'static [u8], Void>>, Self::Error>
-    {
+    fn poll(&mut self) -> std::result::Result<futures::Async<ProtocolsHandlerEvent<Hello, &'static [u8], Void>>, Self::Error> {
         unimplemented!();
     }
 }
-
-// handler wrapper
-// pub mod into_handler {
-//     pub struct 
-// }

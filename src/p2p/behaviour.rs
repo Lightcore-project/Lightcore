@@ -11,13 +11,23 @@ pub struct Behaviour<TSubStream> {
     marker: ::std::marker::PhantomData<TSubStream>
 }
 
+impl<TSubStream> Behaviour<TSubStream>
+where TSubStream: AsyncRead + AsyncWrite {
+    pub fn new() -> Self {
+        Behaviour {
+            events: std::collections::VecDeque::new(),
+            marker: std::marker::PhantomData
+        }
+    }
+}
+
 impl<TSubStream> NetworkBehaviour for Behaviour<TSubStream>
-where TSubStream: AsyncRead + AsyncWrite + std::default::Default {
+where TSubStream: AsyncRead + AsyncWrite {
     type ProtocolsHandler = Handler<TSubStream>;
     type OutEvent = &'static [u8];
 
     fn new_handler(&mut self) -> Handler<TSubStream> {
-        Handler::default()
+        Handler::new()
     }
 
     fn addresses_of_peer(&mut self, _peer_id: &PeerId) -> Vec<Multiaddr> {
