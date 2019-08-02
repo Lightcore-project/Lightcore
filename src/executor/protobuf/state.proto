@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+message StateBytes {
+    bytes object_id = 1;
+    bytes state = 2;
+    map<bytes, bytes> matrix = 3;
+}
