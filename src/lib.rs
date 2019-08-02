@@ -1,4 +1,1 @@
-extern crate crust;
-
-mod p2p;
-
+pub mod p2p;
