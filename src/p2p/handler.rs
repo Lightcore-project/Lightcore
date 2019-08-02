@@ -12,9 +12,10 @@ use super::error::NetworkError;
 use super::protocol::Hello;
 
 #[allow(dead_code)]
+#[derive(Default)]
 pub struct Handler<TSubStream> {
     pending_results: VecDeque<std::result::Result<&'static [u8], NetworkError>>,
-    _marker: std::marker::PhantomData<TSubStream>
+    marker: std::marker::PhantomData<TSubStream>
 }
 
 impl<TSubStream> ProtocolsHandler for Handler<TSubStream>
@@ -61,3 +62,8 @@ where TSubStream: AsyncRead + AsyncWrite {
         unimplemented!();
     }
 }
+
+// handler wrapper
+// pub mod into_handler {
+//     pub struct 
+// }
