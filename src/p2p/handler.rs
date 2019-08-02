@@ -1,36 +1,42 @@
-use tokio_io::{AsyncRead, AsyncWrite};
+use tokio_io::{ AsyncRead, AsyncWrite };
 use libp2p::swarm::{
-    KeepAlive,
     ProtocolsHandler,
     ProtocolsHandlerEvent,
     ProtocolsHandlerUpgrErr,
-    SubstreamProtocol
+    KeepAlive,
+    SubstreamProtocol,
+    NetworkBehaviourAction,
 };
 use void::Void;
+use futures::Async;
+use std::io::Error;
+use std::result::Result;
+use std::marker::PhantomData;
+use std::collections::VecDeque;
 use super::error::NetworkError;
 use super::protocol::Hello;
 
 #[allow(dead_code)]
 #[derive(Default)]
 pub struct Handler<TSubStream> {
-    pending_results: std::collections::VecDeque<std::result::Result<&'static [u8], NetworkError>>,
-    marker: std::marker::PhantomData<TSubStream>
+    pending_results: VecDeque<Result<&'static [u8], NetworkError>>,
+    marker: PhantomData<TSubStream>
 }
 
 impl<TSubStream> Handler<TSubStream>
 where TSubStream: AsyncRead + AsyncWrite {
     pub fn new() -> Self {
         Handler {
-            pending_results: std::collections::VecDeque::new(),
-            marker: std::marker::PhantomData
+            pending_results: VecDeque::new(),
+            marker: PhantomData
         }
     }
 }
 
 impl<TSubStream> ProtocolsHandler for Handler<TSubStream>
 where TSubStream: AsyncRead + AsyncWrite {
-    type InEvent = Void;
-    type OutEvent = Void;
+    type InEvent = &'static [u8];
+    type OutEvent = &'static [u8];
     type Error = NetworkError;
     type Substream = TSubStream;
     type InboundProtocol = Hello;
@@ -49,13 +55,15 @@ where TSubStream: AsyncRead + AsyncWrite {
         self.pending_results.push_front(Ok(info));
     }
 
-    fn inject_event(&mut self, _: Void) {}
+    fn inject_event(&mut self, _: &'static [u8]) {
+        println!("handler inject event...");
+    }
 
     fn connection_keep_alive(&self) -> KeepAlive {
         KeepAlive::Yes
     }
 
-    fn inject_dial_upgrade_error(&mut self, _info: &'static [u8], error: ProtocolsHandlerUpgrErr<std::io::Error>) {
+    fn inject_dial_upgrade_error(&mut self, _info: &'static [u8], error: ProtocolsHandlerUpgrErr<Error>) {
         self.pending_results.push_front(
             Err(
                 match error {
@@ -65,7 +73,11 @@ where TSubStream: AsyncRead + AsyncWrite {
         )
     }
     
-    fn poll(&mut self) -> std::result::Result<futures::Async<ProtocolsHandlerEvent<Hello, &'static [u8], Void>>, Self::Error> {
-        unimplemented!();
+    fn poll(&mut self) -> Result<Async<ProtocolsHandlerEvent<Hello, &'static [u8], &'static [u8]>>, Self::Error> {
+        if let Some(_e) = self.pending_results.pop_back() {
+            Ok(Async::Ready(ProtocolsHandlerEvent::Custom(b"hello, world")))
+        } else {
+            Ok(Async::NotReady)
+        }
     }
 }

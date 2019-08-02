@@ -12,7 +12,7 @@ use libp2p::{
     identity,
     build_development_transport
 };
-use libp2p::kad::{Kademlia, KademliaConfig, KademliaEvent, GetClosestPeersError};
+use libp2p::kad::{ Kademlia, KademliaConfig, KademliaEvent, GetClosestPeersError };
 use libp2p::kad::record::store::MemoryStore;
 use std::time::Duration;
 
@@ -42,12 +42,12 @@ pub fn main() {
     // Manage peers and events.
     let mut swarm = {
         let transport = build_development_transport(node.keypair);
-        
+        let behaviour = Behaviour::new();
+
         // let mut cfg = KademliaConfig::default();
         // cfg.set_query_timeout(Duration::from_secs(5 * 60));
         // let store = MemoryStore::new(node.peer_id.clone());
         // let mut behaviour = Kademlia::with_config(node.peer_id.clone(), store, cfg);
-        let behaviour = Behaviour::new();
 
         // The only address that currently works.
         // behaviour.add_address(
@@ -58,17 +58,30 @@ pub fn main() {
         Swarm::new(transport, behaviour, node.peer_id)
     };
 
-    let addr: libp2p::Multiaddr = "/ip4/127.0.0.1/tcp/3001".parse().unwrap();
+    let addr: libp2p::Multiaddr = "/ip4/127.0.0.1/tcp/3000".parse().unwrap();
     libp2p::swarm::ExpandedSwarm::listen_on(&mut swarm, addr).unwrap();
     println!("listen on 3000...");
 
+    libp2p::swarm::ExpandedSwarm::dial_addr(
+        &mut swarm,
+        "/ip4/127.0.0.1/tcp/3001".parse().unwrap()
+    );
+    
+    
     // Kick it off!
     tokio::run(futures::future::poll_fn(move || {
         loop {
             match swarm.poll().expect("Error while polling swarm") {
-                r => {
-                    println!("{:?}", r);
-                }
+                Async::Ready(None) => {
+                    println!("not ready");
+                },
+                Async::NotReady => {
+                    // println!("not ready")
+                },
+                Async::Ready(Some(msg)) => {
+                    println!("{:?}", msg);
+                },
+                _ => {}
                 // Async::Ready(Some(KademliaEvent::GetClosestPeersResult(res))) => {
                 //     match res {
                 //         Ok(ok) => {
