@@ -44,11 +44,22 @@ fn main() {
     let tcp = TcpConfig::new();
     let mut f = tcp.dial("/ip4/127.0.0.1/tcp/3000".parse().unwrap()).unwrap();
 
+    let r = f.and_then(|stream|{
+        println!("{:?}", stream);
+        Ok(())
+    }).map_err(|err| {
+        // All tasks must have an 'Error' type of '()'. This forces error
+        // handing and helps avoid silencing failures.
+        println!("connection error = {:?}",err);
+    });
+
     // Kick it off!
-    tokio::run(futures::future::poll_fn(move || {
-        loop {
-            f.poll().unwrap();
-        }
-        Ok(Async::NotReady)
-    }));
+    /*     tokio::run(futures::future::poll_fn(move || { */
+    // loop {
+    //     f.poll().unwrap();
+    // }
+    // Ok(Async::NotReady)
+    /* })); */
+
+    tokio::run(r);
 }

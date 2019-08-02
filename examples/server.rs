@@ -45,7 +45,7 @@ fn main() {
     let f = tcp.listen_on("/ip4/0.0.0.0/tcp/3000".parse().unwrap()).unwrap();
 
     let mut r = f.for_each(move |socket| {
-        
+        println!("{:?}", socket);
         Ok(())
     })
     .map_err(|err| {
@@ -54,10 +54,11 @@ fn main() {
     });
 
     // Kick it off!
-    tokio::run(futures::future::poll_fn(move || {
-        loop {
-            r.poll().unwrap();
-        }
-        Ok(Async::NotReady)
-    }));
+/*     tokio::run(futures::future::poll_fn(move || { */
+        // loop {
+        //     r.poll().unwrap();
+        // }
+        // Ok(Async::NotReady)
+    /* })); */
+    tokio::run(r);
 }
