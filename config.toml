@@ -1,3 +1,4 @@
 [jsonrpc]
 listen = "127.0.0.1:9432"
 allow_cors = true
+block_size = "7"

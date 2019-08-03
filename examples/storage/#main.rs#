@@ -1,0 +1,5 @@
+use lightcore::storage;
+
+fn main() {
+    
+}
