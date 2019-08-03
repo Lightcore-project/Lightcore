@@ -131,25 +131,35 @@ fn main() {
     };
 
     libp2p::Swarm::listen_on(&mut swarm, "/ip4/0.0.0.0/tcp/3000".parse().unwrap()).unwrap();
+
+    let r = swarm.for_each(|stream| {
+        println!("{:?}", stream);
+        Ok(())
+    }).map_err(|err| {
+        println!("{:?}",err);
+    });
+
+
+    tokio::run(r);
     
-    let _trans = libp2p::swarm::Swarm::transport(&mut swarm).clone();
-
-    _trans.dial("/ip4/127.0.0.1/tcp/3000".parse().unwrap()).unwrap();
-
-    // Kick it off!
-    tokio::run(futures::future::poll_fn(move || {
-        loop {
-            match swarm.poll().expect("Error while polling swarm") {
-                Async::Ready(Some(KademliaEvent::BootstrapResult(res))) => {
-                    println!("Bootstrap {:?}",res);
-                },
-                Async::Ready(Some(res)) => {
-                    println!("Event: {:?}",res);
-                },
-                Async::Ready(None) | Async::NotReady => break,
-            }
-        }
-
-        Ok(Async::NotReady)
-    }));
+/*     let _trans = libp2p::swarm::Swarm::transport(&mut swarm).clone(); */
+    //
+    // _trans.dial("/ip4/127.0.0.1/tcp/3000".parse().unwrap()).unwrap();
+    //
+    // // Kick it off!
+    // tokio::run(futures::future::poll_fn(move || {
+    //     loop {
+    //         match swarm.poll().expect("Error while polling swarm") {
+    //             Async::Ready(Some(KademliaEvent::BootstrapResult(res))) => {
+    //                 println!("Bootstrap {:?}",res);
+    //             },
+    //             Async::Ready(Some(res)) => {
+    //                 println!("Event: {:?}",res);
+    //             },
+    //             Async::Ready(None) | Async::NotReady => break,
+    //         }
+    //     }
+    //
+    //     Ok(Async::NotReady)
+    /* })); */
 }
