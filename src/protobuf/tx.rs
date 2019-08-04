@@ -1,4 +1,5 @@
 // Automatically generated rust module for 'tx.proto' file
+
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
@@ -6,6 +7,8 @@
 #![allow(unknown_lints)]
 #![allow(clippy)]
 #![cfg_attr(rustfmt, rustfmt_skip)]
+
+
 use std::io::Write;
 use std::borrow::Cow;
 use quick_protobuf::{MessageRead, MessageWrite, BytesReader, Writer, Result};
@@ -14,7 +17,7 @@ use super::*;
 
 #[derive(Debug, Default, PartialEq, Clone)]
 pub struct Transaction<'a> {
-    pub object_id: Cow<'a, [u8]>,
+    pub objectid: Cow<'a, [u8]>,
     pub nonce: i64,
     pub from: Cow<'a, [u8]>,
     pub to: Cow<'a, [u8]>,
@@ -27,7 +30,7 @@ impl<'a> MessageRead<'a> for Transaction<'a> {
         let mut msg = Self::default();
         while !r.is_eof() {
             match r.next_tag(bytes) {
-                Ok(10) => msg.object_id = r.read_bytes(bytes).map(Cow::Borrowed)?,
+                Ok(10) => msg.objectid = r.read_bytes(bytes).map(Cow::Borrowed)?,
                 Ok(16) => msg.nonce = r.read_int64(bytes)?,
                 Ok(26) => msg.from = r.read_bytes(bytes).map(Cow::Borrowed)?,
                 Ok(34) => msg.to = r.read_bytes(bytes).map(Cow::Borrowed)?,
@@ -44,7 +47,7 @@ impl<'a> MessageRead<'a> for Transaction<'a> {
 impl<'a> MessageWrite for Transaction<'a> {
     fn get_size(&self) -> usize {
         0
-            + if self.object_id == Cow::Borrowed(b"") { 0 } else { 1 + sizeof_len((&self.object_id).len()) }
+        + if self.objectid == Cow::Borrowed(b"") { 0 } else { 1 + sizeof_len((&self.objectid).len()) }
         + if self.nonce == 0i64 { 0 } else { 1 + sizeof_varint(*(&self.nonce) as u64) }
         + if self.from == Cow::Borrowed(b"") { 0 } else { 1 + sizeof_len((&self.from).len()) }
         + if self.to == Cow::Borrowed(b"") { 0 } else { 1 + sizeof_len((&self.to).len()) }
@@ -53,7 +56,7 @@ impl<'a> MessageWrite for Transaction<'a> {
     }
 
     fn write_message<W: Write>(&self, w: &mut Writer<W>) -> Result<()> {
-        if self.object_id != Cow::Borrowed(b"") { w.write_with_tag(10, |w| w.write_bytes(&**&self.object_id))?; }
+        if self.objectid != Cow::Borrowed(b"") { w.write_with_tag(10, |w| w.write_bytes(&**&self.objectid))?; }
         if self.nonce != 0i64 { w.write_with_tag(16, |w| w.write_int64(*&self.nonce))?; }
         if self.from != Cow::Borrowed(b"") { w.write_with_tag(26, |w| w.write_bytes(&**&self.from))?; }
         if self.to != Cow::Borrowed(b"") { w.write_with_tag(34, |w| w.write_bytes(&**&self.to))?; }
@@ -66,7 +69,7 @@ impl<'a> MessageWrite for Transaction<'a> {
 #[derive(Debug, Default, PartialEq, Clone)]
 pub struct SignedTransaction<'a> {
     pub signature: Cow<'a, [u8]>,
-    pub tx: Option<Transaction<'a>>,
+    pub tx: Cow<'a, [u8]>,
 }
 
 impl<'a> MessageRead<'a> for SignedTransaction<'a> {
@@ -75,7 +78,7 @@ impl<'a> MessageRead<'a> for SignedTransaction<'a> {
         while !r.is_eof() {
             match r.next_tag(bytes) {
                 Ok(10) => msg.signature = r.read_bytes(bytes).map(Cow::Borrowed)?,
-                Ok(18) => msg.tx = Some(r.read_message::<Transaction>(bytes)?),
+                Ok(18) => msg.tx = r.read_bytes(bytes).map(Cow::Borrowed)?,
                 Ok(t) => { r.read_unknown(bytes, t)?; }
                 Err(e) => return Err(e),
             }
@@ -87,13 +90,14 @@ impl<'a> MessageRead<'a> for SignedTransaction<'a> {
 impl<'a> MessageWrite for SignedTransaction<'a> {
     fn get_size(&self) -> usize {
         0
-            + if self.signature == Cow::Borrowed(b"") { 0 } else { 1 + sizeof_len((&self.signature).len()) }
-        + self.tx.as_ref().map_or(0, |m| 1 + sizeof_len((m).get_size()))
+        + if self.signature == Cow::Borrowed(b"") { 0 } else { 1 + sizeof_len((&self.signature).len()) }
+        + if self.tx == Cow::Borrowed(b"") { 0 } else { 1 + sizeof_len((&self.tx).len()) }
     }
 
     fn write_message<W: Write>(&self, w: &mut Writer<W>) -> Result<()> {
         if self.signature != Cow::Borrowed(b"") { w.write_with_tag(10, |w| w.write_bytes(&**&self.signature))?; }
-        if let Some(ref s) = self.tx { w.write_with_tag(18, |w| w.write_message(s))?; }
+        if self.tx != Cow::Borrowed(b"") { w.write_with_tag(18, |w| w.write_bytes(&**&self.tx))?; }
         Ok(())
     }
 }
+

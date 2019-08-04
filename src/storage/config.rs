@@ -2,8 +2,8 @@ use std::path::PathBuf;
 use std::default::Default;
 
 pub(super) struct Config {
-    pub path: PathBuf,
     pub batch: usize,
+    pub path: PathBuf,
 }
 
 impl Default for Config {
@@ -17,8 +17,8 @@ impl Default for Config {
         data_dir.push("storage");
         
         Config {
-            path: data_dir,
-            batch: 7
+            batch: 7,
+            path: data_dir
         }
     }
 }

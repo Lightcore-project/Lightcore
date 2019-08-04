@@ -1,48 +1,47 @@
-mod error;
 mod config;
+pub mod error;
 
 use sled::Db;
 use std::result::Result;
-use std::default::Default;
+use std::path::PathBuf;
 use error::Error;
 use config::Config;
 
-trait StorageTrait {
-    fn set(&self, key: &'static [u8], value: &'static [u8]) -> Result<(), Error>;
-    fn get(&self, key: &'static [u8]) -> Result<Vec<u8>, Error>;
-    fn batch(&self) -> Result<Vec<(Vec<u8>, Vec<u8>)>, Error>;
-}
+/// # Storage
+/// basic struct for storage models
+pub struct Storage(Db);
 
-struct Storage(Db);
-
-impl Default for Storage {
+impl std::default::Default for Storage {
     fn default() -> Self {
         let conf = Config::default();
         Storage(Db::start_default(conf.path).unwrap())
     }
 }
 
-#[allow(unused_variables)]
-impl StorageTrait for Storage {
-    fn set(&self, key: &'static [u8], value: &'static [u8]) -> Result<(), Error> {
+impl Storage {
+    fn get(&self, key: &'static [u8]) -> Result<Vec<u8>, Error> {
+        match self.0.get(key) {
+            Ok(e) => Ok(e.unwrap().to_vec()),
+            Err(_) => Err(Error::GetError)
+        }
+    }
+    
+    pub(crate) fn new(path: PathBuf) -> Self {
+        Storage(Db::start_default(path).unwrap())
+    }
+    
+    pub(crate) fn set(&self, key: &'static [u8], value: &'static [u8]) -> Result<(), Error> {
         if self.0.get(key).is_ok() {
             return Err(Error::Repeated);
         }
         
         match self.0.set(key, value) {
-            Ok(e) => Ok(()),
-            Err(e) => Err(Error::SetError)
+            Ok(_) => Ok(()),
+            Err(_) => Err(Error::SetError)
         }
     }
 
-    fn get(&self, key: &'static [u8]) -> Result<Vec<u8>, Error> {
-        match self.0.get(key) {
-            Ok(e) => Ok(e.unwrap().to_vec()),
-            Err(e) => Err(Error::GetError)
-        }
-    }
-
-    fn batch(&self) -> Result<Vec<(Vec<u8>, Vec<u8>)>, Error> {
+    pub(crate) fn batch(&self) -> Result<Vec<(Vec<u8>, Vec<u8>)>, Error> {
         let mut arr = vec![];
         let conf = Config::default();
         

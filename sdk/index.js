@@ -21,20 +21,24 @@ const pb = async () => {
   mock.tx.documents = [doc];
 
   let raw_tx = raw_tx_model.create(mock.tx);
-  mock.stx.tx = raw_tx;
-  
   let raw_tx_buff = raw_tx_model.encode(raw_tx).finish();
-  mock.stx.signature = new Buffer.from(nacl.sign(raw_tx_buff, sk));
+
+  mock.stx.tx = raw_tx_buff;
+  mock.stx.signature = new Buffer.from(nacl.sign.detached(raw_tx_buff, sk));
+
+  console.log(mock.stx);
   
   let signed_tx = signed_tx_model.create(mock.stx);
   let code = signed_tx_model.encode(signed_tx).finish().toString('base64');
-
+  
   // send code to jsonrpc
   req({
-    method: 'tx',
-    params: { code }
+    method: 'sendRawTransaction',
+    params: {
+      code,
+      pk: config.pk
+    }
   }).then(r => {
-    console.log(signed_tx.signature.toString('base64'))
     console.log(r.data);
   });
 };

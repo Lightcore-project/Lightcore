@@ -1,3 +1,4 @@
+const conf = require('./config');
 const axios = require('axios');
 axios.default.headers = {
   'content-type': "application/json"
@@ -12,7 +13,7 @@ const req = async data => {
     "params": params
   }
 
-  return axios.post('http://localhost:3030/', json);
+  return axios.post(conf.rpcURL, json);
 }
 
 module.exports = req;

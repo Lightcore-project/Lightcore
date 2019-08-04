@@ -1,4 +1,4 @@
-pub(super) enum Error {
+pub(crate) enum Error {
     SetError,
     GetError,
     Repeated,
