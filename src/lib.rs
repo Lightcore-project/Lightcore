@@ -10,5 +10,3 @@ mod lightcore;
 pub mod jsonrpc;
 pub mod storage;
 pub(crate) mod macros;
-
-pub use lightcore::*;

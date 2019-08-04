@@ -58,20 +58,20 @@ impl JsonRPCServer {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::JsonRPCServer;
-    use tokio::runtime::Runtime;
-    use super::Config;
-    use tokio::prelude::*;
-
-    #[test]
-    fn test_jsonrpc() {
-        let rt = Runtime::new().unwrap();
-        let config = Config::default();
-        let server = JsonRPCServer::new(&config, rt.executor());
-        rt.shutdown_on_idle()
-            .wait().unwrap();
-    //    server.wait();
-    }
-}
+// #[cfg(test)]
+// mod tests {
+//     use super::JsonRPCServer;
+//     use tokio::runtime::Runtime;
+//     use super::Config;
+//     use tokio::prelude::*;
+// 
+//     #[test]
+//     fn test_jsonrpc() {
+//         let rt = Runtime::new().unwrap();
+//         let config = Config::default();
+//         let server = JsonRPCServer::new(&config, rt.executor());
+//         rt.shutdown_on_idle()
+//             .wait().unwrap();
+//     //    server.wait();
+//     }
+// }

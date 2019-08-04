@@ -36,14 +36,14 @@ impl Config {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::Config;
-    use super::Path;
-
-    #[test]
-    fn test_new() {
-        let config = Config::new(Path::new("/home/tiannian/workspace/Alpaca/lightcore/config.toml"));
-    }
-}
+// #[cfg(test)]
+// mod tests {
+//     use super::Config;
+//     use super::Path;
+// 
+//     #[test]
+//     fn test_new() {
+//         let config = Config::new(Path::new("/home/tiannian/workspace/Alpaca/lightcore/config.toml"));
+//     }
+// }
 
