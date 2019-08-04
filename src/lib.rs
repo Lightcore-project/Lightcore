@@ -8,8 +8,7 @@ mod protobuf;
 mod lightcore;
 
 pub mod jsonrpc;
-pub(crate) mod crypto;
-pub(crate) mod storage;
+pub mod storage;
 pub(crate) mod macros;
 
 pub use lightcore::*;

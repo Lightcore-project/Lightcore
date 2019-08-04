@@ -1,10 +1,9 @@
 use serde_json::Map;
 use jsonrpc_http_server::{Server, ServerBuilder};
 use jsonrpc_core::{Params, Value, IoHandler};
-use quick_protobuf::{MessageRead, BytesReader};
+
 use super::config::Config;
-use crate::protobuf::tx::SignedTransaction;
-use crate::crypto::Signature;
+use crate::txpool::TxPool;
 
 
 pub struct JsonRPC {
@@ -19,20 +18,12 @@ impl JsonRPC {
         io.add_method("sendRawTransaction", | p: Params | {
             // get values
             let d: Map<String, Value> = p.parse().unwrap();
-            let pk = d.get("pk").unwrap().as_str().unwrap();
             let code = d.get("code").unwrap().as_str().unwrap();
+            let txpool = TxPool::default();
 
-            // decode stx
-            let code_bytes = base64::decode(code).unwrap();
-            let mut reader = BytesReader::from_bytes(&code_bytes);
-            let stx = SignedTransaction::from_reader(&mut reader, &code_bytes).unwrap();
-
-            // verify signature
-            let verify_sig = Signature::verify_tx(pk.to_string(), stx);
-
-            match verify_sig {
-                true => Ok(Value::Bool(true)),
-                false => Ok(Value::Bool(false))
+            match txpool.push(String::from(code)) {
+                Ok(_) => Ok(Value::Bool(true)),
+                Err(e) => Ok(Value::String(e.to_string()))
             }
         });
 

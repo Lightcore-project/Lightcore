@@ -10,7 +10,7 @@ module.exports = {
     tx: {
       objectid: new Buffer.from('object_id'),
       nonce: 42,
-      from: new Buffer.from('from'),
+      from: new Buffer.from('jnmhttFe7ngO7ypwJv62Fz9FOsSEXaQ5uwEmfETYYCU='),
       to: new Buffer.from('to'),
       operator: '',
       documents: []

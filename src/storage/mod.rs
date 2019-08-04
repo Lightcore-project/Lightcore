@@ -30,8 +30,8 @@ impl Storage {
         Storage(Db::start_default(path).unwrap())
     }
     
-    pub(crate) fn set(&self, key: &'static [u8], value: &'static [u8]) -> Result<(), Error> {
-        if self.0.get(key).is_ok() {
+    pub(crate) fn set(&self, key: Vec<u8>, value: Vec<u8>) -> Result<(), Error> {
+        if self.0.get(key.to_owned()).is_ok() {
             return Err(Error::Repeated);
         }
         
