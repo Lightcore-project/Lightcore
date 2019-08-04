@@ -8,7 +8,7 @@ use crate::protobuf::tx::{Transaction, SignedTransaction};
 
 /// # TxPool
 /// txpool based on storage.
-pub struct TxPool(Storage);
+pub struct TxPool(pub Storage);
 
 impl std::default::Default for TxPool {
     fn default() -> Self {
@@ -60,7 +60,9 @@ impl TxPool {
     }
 
     pub fn pack(&self) -> Result<Vec<(Vec<u8>, Vec<u8>)>, ()> {
-        match self.0.batch() {
+        let conf = Config::default();
+
+        match self.0.batch(conf.batch) {
             Ok(e) => Ok(e),
             Err(_) => Err(())
         }

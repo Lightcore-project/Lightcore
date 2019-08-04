@@ -26,17 +26,14 @@ const pb = async () => {
   mock.stx.tx = raw_tx_buff;
   mock.stx.signature = new Buffer.from(nacl.sign.detached(raw_tx_buff, sk));
 
-  console.log(mock.stx);
-  
   let signed_tx = signed_tx_model.create(mock.stx);
   let code = signed_tx_model.encode(signed_tx).finish().toString('base64');
-  
+
   // send code to jsonrpc
   req({
     method: 'sendRawTransaction',
     params: {
       code,
-      pk: config.pk
     }
   }).then(r => {
     console.log(r.data);

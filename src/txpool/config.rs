@@ -3,6 +3,7 @@ use std::default::Default;
 
 pub(super) struct Config {
     pub path: PathBuf,
+    pub batch: usize
 }
 
 impl Default for Config {
@@ -15,7 +16,8 @@ impl Default for Config {
         data_dir.push("txpool");
         
         Config {
-            path: data_dir
+            path: data_dir,
+            batch: 7
         }
     }
 }

@@ -13,6 +13,8 @@ const req = async data => {
     "params": params
   }
 
+  console.log(json)
+  
   return axios.post(conf.rpcURL, json);
 }
 
