@@ -25,7 +25,7 @@ impl DiscoveryFuture {
     }
 }
 
-impl Future for DiscoveryFuture {
+impl futures::future::Future for DiscoveryFuture {
     type Item = GetClosestPeersOk;
     type Error = GetClosestPeersError;
 
