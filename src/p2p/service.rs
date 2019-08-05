@@ -15,8 +15,7 @@ use libp2p::kad::KademliaEvent;
 use libp2p::kad::GetClosestPeersOk;
 use libp2p::kad::GetClosestPeersError;
 use libp2p::core::muxing::SubstreamRef;
-use futures::prelude::Future;
-use futures::prelude::Stream;
+use futures::prelude::{Future, Stream};
 use futures::future::Shared;
 
 use super::transport::build_transport;
