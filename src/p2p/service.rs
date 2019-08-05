@@ -1,22 +1,22 @@
 #![allow(unused_imports)]
+use std::io;
+use std::sync::Arc;
+use std::time::Duration;
+use std::collections::HashMap;
 use libp2p::identity::Keypair;
 use libp2p::PeerId;
 use libp2p::kad;
 use libp2p::kad::record::store::MemoryStore;
-use std::time::Duration;
 use libp2p::Swarm;
 use libp2p::core::muxing::StreamMuxerBox;
 use libp2p::core::transport::boxed::Boxed;
-use std::io;
 use libp2p::kad::Kademlia;
+use libp2p::kad::KademliaEvent;
+use libp2p::kad::GetClosestPeersOk;
+use libp2p::kad::GetClosestPeersError;
 use libp2p::core::muxing::SubstreamRef;
-use std::sync::Arc;
 use futures::prelude::Future;
 use futures::prelude::Stream;
-use libp2p::kad::KademliaEvent;
-use std::collections::HashMap;
-use libp2p::kad::GetClosestPeersError;
-use libp2p::kad::GetClosestPeersOk;
 use futures::future::Shared;
 
 use super::transport::build_transport;
@@ -71,7 +71,7 @@ impl Service {
         self.swarm.for_each(| event | {
             match event {
                 KademliaEvent::GetClosestPeersResult(res) => {
-                    println!("got closest peer result {:?}", res);
+                    println!("got closest peer result {:?}", res.unwrap());
                 },
                 _ => {
                     println!("match other event {:?}", event);
@@ -83,14 +83,17 @@ impl Service {
         })
     }
 
-    pub fn dial(&mut self ,peer_id: PeerId) -> futures::future::Shared<DiscoveryFuture> {
-        let peer_id2 = peer_id.clone();
-        self.swarm.get_closest_peers(peer_id);
-        let df = DiscoveryFuture::new();
-        let dfs = Future::shared(df);
-        self.discovery_future_map.insert(peer_id2, dfs.to_owned());
-
-        dfs
+    pub fn dial(&mut self ,peer_id: PeerId) {
+        let ml: libp2p::core::multiaddr::multihash::Multihash = peer_id.to_owned().into();
+            
+        loop {
+            self.swarm.get_closest_peers(peer_id.to_owned());
+            if self.swarm.kbuckets_entries().find(|&x| x.as_bytes() == peer_id.as_bytes()).is_some() {
+                println!("\n-------------> find the peer <-------------");
+                println!("peerid: {:?}", &peer_id);
+                println!("-------------> find the peer <-------------\n");
+                break;
+            }
+        }
     }
 }
-

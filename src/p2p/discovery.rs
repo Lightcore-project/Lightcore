@@ -7,6 +7,7 @@ use futures::prelude::Async;
 use std::result::Result;
 use std::option::Option;
 
+#[derive(Debug)]
 pub struct DiscoveryFuture {
     result: Option<GetClosestPeersResult>,
 }
@@ -48,3 +49,32 @@ impl futures::future::Future for DiscoveryFuture {
     }
 }
 
+// #[cfg(test)]
+// mod tests {
+//     use super::DiscoveryFuture;
+//     use futures::future::{Future, Shared};
+//     use std::fmt::Debug;
+// 
+//     fn run_one<F>(f: F) -> Result<F::Item, F::Error>
+//     where
+//         F: IntoFuture,
+//         F::Future: Send + 'static,
+//         F::Item: Send + 'static,
+//         F::Error: Send + 'static,
+//     {
+//         let mut runtime = tokio::runtime::Runtime::new().expect("Unable to create a runtime");
+//         runtime.block_on(f.into_future())
+//     }
+//     
+//     #[test]
+//     fn shared() {
+//         let df = DiscoveryFuture::new();
+//         let dfs = Future::shared(df);
+//         let _dfs = dfs.clone();
+// 
+//         assert_eq!(
+//             _dfs.peek().unwrap().unwrap().fmt("{:?}"),
+//             df.fmt("{:?}")
+//         );
+//     }
+// }
