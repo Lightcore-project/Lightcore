@@ -1,5 +1,5 @@
-# p2p
+# p2p module
 
-+ generate a peer
-+ find new peer
-+ 
+- [ ] Connect to peer by PeerId
+- [ ] Gossip in network
+
