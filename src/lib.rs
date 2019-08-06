@@ -4,4 +4,4 @@ extern crate serde_derive;
 mod config;
 mod jsonrpc;
 mod protobuf;
-mod txpool;
+mod p2p;

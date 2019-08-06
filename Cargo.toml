@@ -14,3 +14,5 @@ jsonrpc-core = "13.0.0"
 jsonrpc-http-server = "13.0.0"
 base64 = "0.10.1"
 quick-protobuf = "0.6.3"
+crust = "0.32.1"
+
