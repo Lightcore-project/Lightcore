@@ -3,41 +3,45 @@ use futures::prelude::Future;
 use libp2p::kad::GetClosestPeersOk;
 use libp2p::kad::GetClosestPeersError;
 use libp2p::kad::GetClosestPeersResult;
+use libp2p::PeerId;
+use futures::task::Task;
 use futures::prelude::Async;
 use std::result::Result;
 use std::option::Option;
+use std::collections::HashMap;
 
-pub struct DiscoveryFuture {
-    result: Option<GetClosestPeersResult>,
+use super::futures::FuturesInner;
+
+pub struct DiscoveryFuture<'a> {
+    peer_id: PeerId,
+    inner: &'a mut FuturesInner<GetClosestPeersResult>,
 }
 
-impl DiscoveryFuture {
-    pub fn new() -> Self {
+impl<'a> DiscoveryFuture<'a> {
+    pub fn new(peer_id: PeerId, inner: &'a mut FuturesInner<GetClosestPeersResult>) -> Self {
         DiscoveryFuture {
-            result:None,
+            inner,
+            peer_id,
         }
     }
-
-    pub fn tigger(&mut self,result: GetClosestPeersResult) {
-        self.result = Some(result);
-        let handler = task::current();
-        handler.notify();
-    }
 }
 
-impl futures::future::Future for DiscoveryFuture {
+impl<'a> Future for DiscoveryFuture<'a> {
     type Item = GetClosestPeersOk;
     type Error = GetClosestPeersError;
 
     fn poll (&mut self) -> Result<Async<GetClosestPeersOk>, GetClosestPeersError> {
-        match self.result.to_owned() {
-            Some(some) => {
-                match some {
+        let _task = task::current();
+        self.inner.tasks.insert(self.peer_id.clone(),_task);
+        match self.inner.results.get(&self.peer_id) {
+            Some(res) => {
+                // Need remove
+                match res {
                     Ok(r) => {
-                        Ok(Async::Ready(r))
+                        Ok(Async::Ready(r.clone()))
                     },
                     Err(r) => {
-                        Err(r)
+                        Err(r.clone())
                     }
                 }
             },

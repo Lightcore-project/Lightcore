@@ -17,17 +17,19 @@ use libp2p::kad::KademliaEvent;
 use std::collections::HashMap;
 use libp2p::kad::GetClosestPeersError;
 use libp2p::kad::GetClosestPeersOk;
-use futures::future::Shared;
+use libp2p::kad::GetClosestPeersResult;
+use futures::task::Task;
 
 use super::transport::build_transport;
 use super::discovery::DiscoveryFuture;
 use super::config::Config;
+use super::futures::FuturesInner;
 
 pub struct Service{
     key_pair: Keypair,
     peer_id: PeerId,
     swarm: Swarm<Boxed<(PeerId, StreamMuxerBox), io::Error>, Kademlia<SubstreamRef<Arc<StreamMuxerBox>>, MemoryStore>>,
-    discovery_future_map: HashMap<PeerId, Shared<DiscoveryFuture>>,
+    discoverys: FuturesInner<GetClosestPeersResult>,
 }
 
 impl Service {
@@ -63,7 +65,7 @@ impl Service {
             key_pair,
             peer_id,
             swarm,
-            discovery_future_map: HashMap::new()
+            discoverys: FuturesInner::new(),
         }
     }
 
@@ -83,14 +85,11 @@ impl Service {
         })
     }
 
-    pub fn dial(&mut self ,peer_id: PeerId) -> futures::future::Shared<DiscoveryFuture> {
-        let peer_id2 = peer_id.clone();
+    pub fn dial(&mut self ,peer_id: PeerId) -> DiscoveryFuture {
+        let peer_id1 = peer_id.clone();
         self.swarm.get_closest_peers(peer_id);
-        let df = DiscoveryFuture::new();
-        let dfs = Future::shared(df);
-        self.discovery_future_map.insert(peer_id2, dfs.to_owned());
-
-        dfs
+        let df = DiscoveryFuture::new(peer_id1, &mut (self.discoverys));
+        df
     }
 }
 
