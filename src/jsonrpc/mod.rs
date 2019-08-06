@@ -1,4 +1,5 @@
 pub mod config;
+pub mod server;
 
 use config::Config;
 use crate::protobuf::tx::SignedTransaction;
@@ -9,12 +10,20 @@ use jsonrpc_core::Value;
 use serde_json::Map;
 use jsonrpc_http_server::Server;
 use jsonrpc_http_server::ServerBuilder;
-use tokio::runtime::TaskExecutor;
 use quick_protobuf::{MessageRead, BytesReader};
-
+use tokio::runtime::{Runtime, TaskExecutor};
 
 pub struct JsonRPCServer {
-    server: Server,
+    pub server: Server,
+}
+
+impl std::default::Default for JsonRPCServer {
+    fn default() -> Self {
+        let rt = Runtime::new().unwrap();
+        let conf = Config::default();
+        
+        JsonRPCServer::new(&conf, rt.executor())
+    }
 }
 
 impl JsonRPCServer {
@@ -22,7 +31,7 @@ impl JsonRPCServer {
                _execute: TaskExecutor
                ) -> Self {
         let mut io = IoHandler::new();
-        io.add_method("sendRawTranscation", | p: Params | {
+        io.add_method("sendRawTransaction", | p: Params | {
             let d: Map<String, Value> = p.parse().unwrap();
             let code = d.get("code").unwrap().as_str().unwrap();
             let code_bytes = base64::decode(code).unwrap();
@@ -49,21 +58,20 @@ impl JsonRPCServer {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::JsonRPCServer;
-    use tokio::runtime::Runtime;
-    use super::Config;
-    use tokio::prelude::*;
-
-    #[test]
-    fn test_jsonrpc() {
-        let rt = Runtime::new().unwrap();
-        let config = Config::default();
-        let server = JsonRPCServer::new(&config, rt.executor());
-        rt.shutdown_on_idle()
-            .wait().unwrap();
-    //    server.wait();
-    }
-}
-
+// #[cfg(test)]
+// mod tests {
+//     use super::JsonRPCServer;
+//     use tokio::runtime::Runtime;
+//     use super::Config;
+//     use tokio::prelude::*;
+// 
+//     #[test]
+//     fn test_jsonrpc() {
+//         let rt = Runtime::new().unwrap();
+//         let config = Config::default();
+//         let server = JsonRPCServer::new(&config, rt.executor());
+//         rt.shutdown_on_idle()
+//             .wait().unwrap();
+//     //    server.wait();
+//     }
+// }

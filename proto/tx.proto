@@ -3,7 +3,7 @@ import "./doc.proto";
 syntax = "proto3";
 
 message Transaction {
-  bytes object_id = 1;
+  bytes objectid = 1;
   int64 nonce = 2;
   bytes from = 3;
   bytes to = 4;
@@ -13,5 +13,5 @@ message Transaction {
 
 message SignedTransaction {
   bytes signature = 1;
-  Transaction tx = 2;
+  bytes tx = 2;
 }

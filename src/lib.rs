@@ -1,7 +1,12 @@
+#![allow(dead_code)]
 #[macro_use]
 extern crate serde_derive;
 
 mod config;
-mod jsonrpc;
-mod protobuf;
 mod txpool;
+mod protobuf;
+mod lightcore;
+
+pub mod jsonrpc;
+pub mod storage;
+pub(crate) mod macros;
