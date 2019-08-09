@@ -2,6 +2,7 @@
 #[macro_use]
 extern crate serde_derive;
 
+mod chain;
 mod config;
 mod txpool;
 mod protobuf;
