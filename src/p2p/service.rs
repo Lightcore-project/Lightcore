@@ -12,7 +12,7 @@ use super::config::Config;
 pub struct Service {
     p2p: QuicP2p,
     connected_peer: HashMap<NodeInfo, Peer>,
-    our_info: NodeInfo,
+    pub our_info: NodeInfo,
     ev_rx: Receiver<Event>,
 }
 
