@@ -65,10 +65,10 @@ impl Storage {
         let mut arr = vec![];
         
         for i in self.0.iter().enumerate() {
-            if i.to_owned().0 >= n {
-                return Ok(arr)
-            }
-            arr.push((i.to_owned().1.unwrap().0, i.1.unwrap().1.to_vec()));
+            if i.to_owned().0 >= n { return Ok(arr) }
+            arr.push((i.to_owned().1.unwrap().0, i.to_owned().1.unwrap().1.to_vec()));
+
+            self.del(i.1.unwrap().0).unwrap();
         }
         Ok(arr)
     }

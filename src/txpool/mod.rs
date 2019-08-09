@@ -2,7 +2,7 @@ mod config;
 
 use config::Config;
 use sha3::{Digest, Sha3_256};
-use quick_protobuf::{MessageRead, BytesReader};
+use quick_protobuf::{MessageRead, BytesReader, serialize_into_vec};
 use crate::storage::{Storage, error::Error};
 use crate::protobuf::tx::{Transaction, SignedTransaction};
 
@@ -51,9 +51,8 @@ impl TxPool {
         
         // set in txpool
         let tx_id = hasher.result().to_vec();
-        let tx = stx.tx.to_vec();
         
-        match self.0.set(tx_id, tx) {
+        match self.0.set(tx_id, serialize_into_vec(&stx).unwrap()) {
             Ok(_) => Ok(()),
             Err(e) => { Err(e) }
         }

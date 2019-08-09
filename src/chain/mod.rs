@@ -1,72 +1,49 @@
+mod block;
 mod merkle;
-use std::borrow::Cow;
-use std::time::{UNIX_EPOCH, SystemTime};
-use ed25519_dalek::{PublicKey, SecretKey, ExpandedSecretKey};
-use merkle::MerkleTree;
-use quick_protobuf::serialize_into_vec;
-use tiny_keccak::sha3_256;
-use crate::protobuf::tx::{SignedTransaction, SignedTransactions};
-use crate::protobuf::block::{Block, SignedBlock, BlockHeader};
+mod config;
 
-fn ts() -> u32 {
-    let start = SystemTime::now();
-    let since_the_epoch = start.duration_since(UNIX_EPOCH)
-        .expect("HaHa, Time went backwards!");
-    let in_ms = since_the_epoch.as_secs() * 1000 +
-        since_the_epoch.subsec_nanos() as u64 / 1_000_000;
+use config::Config;
+use ed25519_dalek::SecretKey;
+use quick_protobuf::{serialize_into_vec, deserialize_from_slice};
+use crate::txpool::TxPool;
+use crate::storage::{Storage, error::Error};
+use crate::protobuf::tx::SignedTransaction;
 
-    in_ms as u32
-}
 
-fn tx_ser(txs: Vec<SignedTransaction>) -> Vec<Vec<u8>> {
-    let mut txs_vec = vec![];
-    for i in txs {
-        txs_vec.push(serialize_into_vec(&i).unwrap());
-    }
+/// # TODO:
+/// + block iter
+pub struct Chain(pub Storage);
 
-    txs_vec
-}
-
-fn new_header(pk: PublicKey, txs: Vec<SignedTransaction>) -> BlockHeader {
-    // txs
-    let txs_vec = tx_ser(txs);
-    
-    // build merkle tree;
-    let tree = MerkleTree::from_vec(txs_vec);
-
-    // return
-    BlockHeader {
-        height: 9,
-        timestamp: ts(),
-        miner: Cow::from(pk.as_bytes().to_vec()),
-        root: Cow::from(tree.root_hash().to_vec())
+impl std::default::Default for Chain {
+    fn default() -> Self {
+        let conf = Config::default();
+        Chain(Storage::new(conf.path))
     }
 }
 
-pub fn new_block(sk: SecretKey, txs: Vec<SignedTransaction>) -> SignedBlock {
-    let pk = PublicKey::from(&sk);
-    let esk = ExpandedSecretKey::from(&sk);
+impl Chain {
+    fn new_block(&self, sk: SecretKey) -> Result<(), Error> {
+        let txpool = TxPool::default();
+        let stxs = txpool.pack().unwrap();
 
-    // txs
-    let txs_vec = serialize_into_vec(&SignedTransactions {
-        stxs: txs.to_owned()
-    }).unwrap();
-
-    // header
-    let header = new_header(pk.to_owned(), txs);
-
-    // return block
-    let block = Block {
-        header: Some(header),
-        txs: Cow::Owned(txs_vec)
-    };
-
-    // sign block
-    let block_bytes = serialize_into_vec(&block).unwrap();
+        let mut stxs_vec: Vec<SignedTransaction> = vec![];
+        for i in stxs.iter() {
+            stxs_vec.push(deserialize_from_slice(&i.1).unwrap());
+        }
+        
+        let block = block::new_block(sk, stxs_vec);
+        match self.0.set(block.id.to_vec(), serialize_into_vec(&block).unwrap()) {
+            Ok(_) => Ok(()),
+            Err(e) => { Err(e) }
+        }
+    }
     
-    SignedBlock {
-        id: Cow::from(sha3_256(&block_bytes).to_vec()),
-        signature: Cow::from(esk.sign(&block_bytes, &pk).to_bytes().to_vec()),
-        block: Cow::from(block_bytes)
+    fn batch(&self) -> Result<Vec<(Vec<u8>, Vec<u8>)>, ()> {
+        let conf = Config::default();
+        
+        match self.0.batch(conf.batch) {
+            Ok(e) => Ok(e),
+            Err(_) => Err(())
+        }
     }
 }
