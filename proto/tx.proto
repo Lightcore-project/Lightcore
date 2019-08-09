@@ -15,3 +15,7 @@ message SignedTransaction {
   bytes signature = 1;
   bytes tx = 2;
 }
+
+message SignedTransactions {
+  repeated SignedTransaction stxs = 1;
+}

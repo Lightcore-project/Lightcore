@@ -101,3 +101,34 @@ impl<'a> MessageWrite for SignedTransaction<'a> {
     }
 }
 
+#[derive(Debug, Default, PartialEq, Clone)]
+pub struct SignedTransactions<'a> {
+    pub stxs: Vec<SignedTransaction<'a>>,
+}
+
+impl<'a> MessageRead<'a> for SignedTransactions<'a> {
+    fn from_reader(r: &mut BytesReader, bytes: &'a [u8]) -> Result<Self> {
+        let mut msg = Self::default();
+        while !r.is_eof() {
+            match r.next_tag(bytes) {
+                Ok(10) => msg.stxs.push(r.read_message::<SignedTransaction>(bytes)?),
+                Ok(t) => { r.read_unknown(bytes, t)?; }
+                Err(e) => return Err(e),
+            }
+        }
+        Ok(msg)
+    }
+}
+
+impl<'a> MessageWrite for SignedTransactions<'a> {
+    fn get_size(&self) -> usize {
+        0
+        + self.stxs.iter().map(|s| 1 + sizeof_len((s).get_size())).sum::<usize>()
+    }
+
+    fn write_message<W: Write>(&self, w: &mut Writer<W>) -> Result<()> {
+        for s in &self.stxs { w.write_with_tag(10, |w| w.write_message(s))?; }
+        Ok(())
+    }
+}
+

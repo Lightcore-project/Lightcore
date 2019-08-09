@@ -4,7 +4,8 @@ use std::time::{UNIX_EPOCH, SystemTime};
 use ed25519_dalek::{PublicKey, SecretKey, ExpandedSecretKey};
 use merkle::MerkleTree;
 use quick_protobuf::serialize_into_vec;
-use crate::protobuf::tx::SignedTransaction;
+use tiny_keccak::sha3_256;
+use crate::protobuf::tx::{SignedTransaction, SignedTransactions};
 use crate::protobuf::block::{Block, SignedBlock, BlockHeader};
 
 fn ts() -> u32 {
@@ -42,19 +43,30 @@ fn new_header(pk: PublicKey, txs: Vec<SignedTransaction>) -> BlockHeader {
     }
 }
 
-pub fn new_block(sk: SecretKey, txs: Vec<SignedTransaction>) -> Block {
+pub fn new_block(sk: SecretKey, txs: Vec<SignedTransaction>) -> SignedBlock {
     let pk = PublicKey::from(&sk);
     let esk = ExpandedSecretKey::from(&sk);
 
     // txs
-    let txs_vec = tx_ser(txs);
+    let txs_vec = serialize_into_vec(&SignedTransactions {
+        stxs: txs.to_owned()
+    }).unwrap();
 
     // header
     let header = new_header(pk.to_owned(), txs);
 
     // return block
-    Block {
+    let block = Block {
         header: Some(header),
         txs: Cow::Owned(txs_vec)
+    };
+
+    // sign block
+    let block_bytes = serialize_into_vec(&block).unwrap();
+    
+    SignedBlock {
+        id: Cow::from(sha3_256(&block_bytes).to_vec()),
+        signature: Cow::from(esk.sign(&block_bytes, &pk).to_bytes().to_vec()),
+        block: Cow::from(block_bytes)
     }
 }

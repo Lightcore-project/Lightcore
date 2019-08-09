@@ -54,3 +54,46 @@ impl<'a> MessageWrite for Document<'a> {
     }
 }
 
+pub mod mod_Document {
+
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum DocType {
+    PlainText = 1,
+    RDFTurle = 2,
+    RDFXML = 3,
+    RDFJsonLD = 4,
+}
+
+impl Default for DocType {
+    fn default() -> Self {
+        DocType::PlainText
+    }
+}
+
+impl From<i32> for DocType {
+    fn from(i: i32) -> Self {
+        match i {
+            1 => DocType::PlainText,
+            2 => DocType::RDFTurle,
+            3 => DocType::RDFXML,
+            4 => DocType::RDFJsonLD,
+            _ => Self::default(),
+        }
+    }
+}
+
+impl<'a> From<&'a str> for DocType {
+    fn from(s: &'a str) -> Self {
+        match s {
+            "PlainText" => DocType::PlainText,
+            "RDFTurle" => DocType::RDFTurle,
+            "RDFXML" => DocType::RDFXML,
+            "RDFJsonLD" => DocType::RDFJsonLD,
+            _ => Self::default(),
+        }
+    }
+}
+
+}
+

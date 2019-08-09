@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message BlockHeader {
+  uint64 height = 1;
+  uint32 timestamp = 2;
+  bytes miner = 3;
+  bytes root = 4;
+}
+
+message Block {
+  BlockHeader header = 1;
+  bytes txs = 2;
+}
+
+message SignedBlock {
+  bytes id = 1;
+  bytes signature = 2;
+  bytes block = 3;
+}

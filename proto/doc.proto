@@ -3,12 +3,12 @@ syntax = "proto3";
 message Document {
   bytes docid = 1;
 
-  // enum DocType {
-  //   PlainText = 1;
-  //   RDFTurle = 2;
-  //   RDFXML = 3;
-  //   RDFJsonLD = 4;
-  // }
+  enum DocType {
+    PlainText = 1;
+    RDFTurle = 2;
+    RDFXML = 3;
+    RDFJsonLD = 4;
+  }
 
   int64 doctype = 2;
   string content = 3;
