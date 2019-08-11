@@ -54,6 +54,24 @@ impl Storage {
         }
     }
 
+    pub fn get_by_order(&self, n: usize) -> Result<Vec<u8>, Error> {
+        let mut res: Vec<u8> = vec![];
+        let mut flag: bool = false;
+        
+        for i in self.0.iter().enumerate() {
+            if i.to_owned().0 == n {
+                flag = true;
+                res = i.to_owned().1.unwrap().1.to_vec();
+            }
+        }
+
+        if flag {
+            Ok(res)
+        } else {
+            Err(Error::GetOrderError)            
+        }
+    }
+
     pub fn del(&self, key: Vec<u8>) -> Result<(), Error> {
         match self.0.del(key) {
             Ok(_) => Ok(()),

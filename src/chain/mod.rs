@@ -8,7 +8,7 @@ use quick_protobuf::{serialize_into_vec, deserialize_from_slice};
 use crate::txpool::TxPool;
 use crate::storage::{Storage, error::Error};
 use crate::protobuf::tx::SignedTransaction;
-
+// use crate::protobuf::block::SignedBlock;
 
 /// # TODO:
 /// + block iter
@@ -36,6 +36,10 @@ impl Chain {
             Ok(_) => Ok(()),
             Err(e) => { Err(e) }
         }
+    }
+    
+    fn get_block_by_height(&self, height: usize) -> Vec<u8> {
+        self.0.get_by_order(height).unwrap()
     }
     
     fn batch(&self) -> Result<Vec<(Vec<u8>, Vec<u8>)>, ()> {

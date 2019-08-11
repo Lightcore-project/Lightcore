@@ -6,6 +6,7 @@ pub enum Error {
     Repeated,
     BatchError,
     DeleteError,
+    GetOrderError,
     None
 }
 
@@ -18,6 +19,7 @@ impl std::string::ToString for Error {
             Error::Repeated => String::from("Repeated"),
             Error::BatchError => String::from("Batcherror"),
             Error::DeleteError => String::from("Deleteerror"),
+            Error::GetOrderError => String::from("GetOrderError"),
             Error::None => String::from("None")
         }
     }
