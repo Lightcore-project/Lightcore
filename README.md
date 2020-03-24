@@ -17,7 +17,7 @@
 
 ### Introduction
 
-![](img/lightcore.png)
+![](img/lightcore.jpg)
 
 ### Project structure
 
