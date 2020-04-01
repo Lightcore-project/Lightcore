@@ -1,4 +1,7 @@
-# Lightcore: A lightweight flexable blockchain framework.
+#
+
+
+Lightcore: A lightweight flexable blockchain framework.
 
 *read in other language: [简体中文](zh/README.md)*
 
@@ -38,7 +41,7 @@ To learn more design detail for this project, please read [Paper and Documents](
 ### Paper and Documents
 
 - [Whitepaper](en/whitepaper.md): Describe `Lightcore`'s aims and design principle.
-- [RFCs](en/rfcs/index.md): Describe the detail of project.
+- [RFCs](rfcs/README.md): Describe the detail of project.
 
 ## State of project
 
