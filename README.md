@@ -31,7 +31,7 @@ This part present all project structure and this project's location.
   - [Vida](https://github.com/Yinet-project/Stem): Misc project of `Yinet` for application.
     - [Curdata](): Application at financial.
 
-  ## Project Design
+## Project Design
 
 To learn more design detail for this project, please read [Paper and Documents](#Paper and Documents). 
 
