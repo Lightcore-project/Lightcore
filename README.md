@@ -1,7 +1,4 @@
-#
-
-
-Lightcore: A lightweight flexable blockchain framework.
+# Lightcore: A lightweight flexable blockchain framework.
 
 *read in other language: [简体中文](zh/README.md)*
 
@@ -50,7 +47,7 @@ To learn more design detail for this project, please read [Paper and Documents](
 ### Implementation
 
 - Rust
-  - [framework](#)  A framework.
+  - [framework](https://github.com/Lightcore-project/framework):  A framework.
   - [smartcontract](#): Smart contract engine framework.
   - [sc-native](#): Native contract for `smartcontract`.
   - [crosschain](#): Cross chain.
