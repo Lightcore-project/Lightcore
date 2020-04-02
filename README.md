@@ -1,4 +1,4 @@
-# Lightcore: A lightweight flexable blockchain framework.
+# Lightcore: A lightweight flexible blockchain framework
 
 *read in other language: [简体中文](zh/README.md)*
 
@@ -17,7 +17,7 @@
 
 ### Introduction
 
-![](img/lightcore.jpg)
+![Lightcore](img/lightcore.jpg)
 
 ### Project structure
 
@@ -25,15 +25,17 @@ This part present all project structure and this project's location.
 
 - [Yinet](https://github.com/Yinet-project/Yinet): Root project.
   - [Stem](https://github.com/Yinet-project/Stem): A distributed infrastructure.
-  - [Lightcore](https://github.com/Yinet-project/Lightcore): A lightweight flexable blockchain framework.
+  - [Lightcore](https://github.com/Yinet-project/Lightcore): A lightweight
+  flexible blockchain framework.
   - [Hodor](https://github.com/Yinet-project/Hodor): Distributed AI Helper with RDF.
   - [Karma](https://github.com/Yinet-project/Karma): Advance cryptography toolkits.
   - [Vida](https://github.com/Yinet-project/Stem): Misc project of `Yinet` for application.
-    - [Curdata](): Application at financial.
+    - [Curdata](https://github.com/Curdata-project/Curdata): Application at financial.
 
 ## Project Design
 
-To learn more design detail for this project, please read [Paper and Documents](#Paper and Documents). 
+To learn more design detail for this project, please read
+[Paper and Documents](#Paper-and-Documents).
 
 ### Paper and Documents
 
