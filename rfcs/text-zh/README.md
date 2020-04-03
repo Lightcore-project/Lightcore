@@ -17,7 +17,8 @@
 
 - 架构
   - [0001-architecture-of-lightcore](0001-architecture-of-lightcore.md): 描述了`Lightcore` 的架构设计。
-  - [0002-network-abstract](0002-network-abstract.md): 网络层的抽象结构。
-  - [0003-kv-storage-abstract](0003-kv-storage-abstract.md): key-value存储的抽象结构与设计。
+  - [0002-state-and-transaction](0002-state-and-transaction.md): 网络层的抽象结构。
+  - [0003-network-abstract](0002-network-abstract.md): 网络层的抽象结构。
+  - [0004-kv-storage-abstract](0003-kv-storage-abstract.md): key-value存储的抽象结构与设计。
 
 
