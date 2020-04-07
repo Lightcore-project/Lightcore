@@ -1,21 +1,21 @@
 - title: 状态与事务
 
-## 摘要
+## SUMMARY
 
 描述了Lightcore中对状态 `State` 概念的表达方式，和对 `State` 进行修改的 `Transaction` 事务的结构。
 
-## 设计目标
+## Motivation
 
 提供一个更加高效的，具有兼容性和扩展性的 `State` 和`Transaction` 结构。
 
-## 详细设计
+## Detailed design
 
 ### 状态
 
 Lightcore本质上是一个多节点状态管理框架，本质上Lightcore中管理的状态就是一个具有一定长度的二进制数组，我们可以使用这样的代码表达状态：
 
 ```rust
-struct State {
+pub struct State {
     pub capacity: usize,
     pub state: Vec<u8>,
     pub lock: Option<Script>,
